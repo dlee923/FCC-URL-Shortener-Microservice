@@ -31,12 +31,15 @@ app.post('/api/shorturl', function(req, res) {
     short_url: ''
   };
 
-  console.log(req_original_url);
-
-  dns_.lookup(req_original_url, (err, addresses) => {
-    console.log(addresses)
+  dns_.lookup(req_original_url, 0, (err, addresses) => {
+    if (err !== null) {
+      console.log(err);
+    } else {
+      console.log(addresses);
+    }    
   });
   
+  res.json(shortURLObj);
 
 });
 

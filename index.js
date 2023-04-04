@@ -30,22 +30,25 @@ app.post('/api/shorturl', function(req, res) {
     original_url: req_original_url,
     short_url: ''
   };
+  var dns_host_url = '';
 
-  dns_.lookup(req_original_url, function(err, addresses) {
-    console.log('----------')
-    console.log(err);
-    console.log('----------')
-    console.log(addresses);
-    console.log('----------')
-    // if (err !== null) {
-    //   console.log(err);
-    // } else {
-    //   console.log(addresses);
-    // }    
-  });
+  if (req_original_url.includes('https://')) {
+    dns_host_url = req_original_url.slice(9)    
+  } else {
+    dns_host_url = req_original_url
+  }
   
-  res.json(shortURLObj);
+  console.log(dns_host_url)
 
+  dns_.lookup(req_original_url, (err, addresses) => {
+    if (err !== null) {
+      console.log(err);
+      res.json(invalidURLObj);
+    } else {
+      console.log(addresses);
+      res.json(shortURLObj);
+    }    
+  });
 });
 
 app.listen(port, function() {

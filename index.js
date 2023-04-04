@@ -26,12 +26,13 @@ app.use('/', bodyParser.urlencoded({extended: false}))
 
 function saveToSessionStorage(key, value) {
   sessionStorage.setItem(key, value);
+  console.log('short url ' + value + ' saved to key ' + key);
 }
 
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = {error: 'invalid url'};
   const req_original_url = req.body.url;
-  const req_short_url = Math.floor(Math.random() * 100000);
+  const req_short_url = Math.floor(Math.random() * 100000).toString();
   let shortURLObj = {
     original_url: req_original_url,
     short_url: req_short_url
@@ -61,7 +62,7 @@ app.post('/api/shorturl', function(req, res) {
 app.get('/api/:short_url', function(req, res) {
   let shortURLAddress = sessionStorage.getItem(req.params.short_url);
   console.log(shortURLAddress);
-  // res.redirect(shortURLAddress);
+  res.redirect(shortURLAddress);
 })
 
 app.listen(port, function() {

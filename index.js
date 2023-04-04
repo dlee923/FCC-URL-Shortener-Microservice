@@ -26,7 +26,6 @@ app.use('/', bodyParser.urlencoded({extended: false}))
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = {error: 'invalid url'};
   const req_original_url = req.body.url;
-  console.log(req_original_url);
   let shortURLObj = {
     original_url: req_original_url,
     short_url: ''
@@ -40,9 +39,6 @@ app.post('/api/shorturl', function(req, res) {
   } else {
     dns_host_url = req_original_url
   }
-
-  console.log(dns_host_url)
-  console.log(req_original_url)
 
   dns_.lookup(dns_host_url, (err, addresses) => {
     if (err !== null) {

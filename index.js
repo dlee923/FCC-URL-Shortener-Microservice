@@ -33,7 +33,7 @@ app.post('/api/shorturl', function(req, res) {
   var dns_host_url = '';
 
   if (req_original_url.includes('https://')) {
-    dns_host_url = req_original_url.slice(9)    
+    dns_host_url = req_original_url.slice(8)    
   } else {
     dns_host_url = req_original_url
   }

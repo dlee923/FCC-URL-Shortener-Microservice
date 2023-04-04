@@ -21,7 +21,7 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.post('/', bodyParser.urlencoded({extended: false}))
+app.use('/', bodyParser.urlencoded({extended: false}))
 
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = {error: 'invalid url'};

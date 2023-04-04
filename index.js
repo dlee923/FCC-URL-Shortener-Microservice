@@ -54,7 +54,7 @@ app.post('/api/shorturl', function(req, res) {
     } else {
       console.log(addresses);
       res.json(shortURLObj);
-      saveToSessionStorage(short_url, req_original_url);
+      saveToSessionStorage(req_short_url, req_original_url);
     }    
   });
 });

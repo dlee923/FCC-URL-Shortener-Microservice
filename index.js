@@ -33,9 +33,10 @@ app.post('/api/shorturl', function(req, res) {
 
   console.log(req_original_url);
 
-  // dns_.lookup(req_original_url, (err, addresses) => {
-  //   console.log(addresses)
-  // });
+  dns_.lookup(req_original_url, (err, addresses) => {
+    console.log(addresses)
+  });
+  
 
 });
 

@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const dns_ = require('dns');
 
+
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
@@ -23,12 +24,17 @@ app.get('/api/hello', function(req, res) {
 
 app.use('/', bodyParser.urlencoded({extended: false}))
 
+function saveToSessionStorage(key, value) {
+  sessionStorage.setItem(key, value);
+}
+
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = {error: 'invalid url'};
   const req_original_url = req.body.url;
+  const req_short_url = Math.floor(Math.random() * 100000);
   let shortURLObj = {
     original_url: req_original_url,
-    short_url: ''
+    short_url: req_short_url
   };
   var dns_host_url = '';
 
@@ -47,9 +53,16 @@ app.post('/api/shorturl', function(req, res) {
     } else {
       console.log(addresses);
       res.json(shortURLObj);
+      saveToSessionStorage(short_url, req_original_url);
     }    
   });
 });
+
+app.get('/api/:short_url', function(req, res) {
+  let shortURLAddress = sessionStorage.getItem(req.params.short_url);
+  console.log(shortURLAddress);
+  // res.redirect(shortURLAddress);
+})
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);

@@ -25,7 +25,7 @@ app.use('/', bodyParser.urlencoded({extended: false}))
 
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = {error: 'invalid url'};
-  let req_original_url = req.body.url;
+  const req_original_url = req.body.url;
   let shortURLObj = {
     original_url: req_original_url,
     short_url: ''
@@ -33,7 +33,9 @@ app.post('/api/shorturl', function(req, res) {
   var dns_host_url = '';
 
   if (req_original_url.includes('https://')) {
-    dns_host_url = req_original_url.slice(8)    
+    dns_host_url = req_original_url.slice(8);
+  } else if (req_original_url.includes('http://')) {
+    dns_host_url = req_original_url.slice(7);
   } else {
     dns_host_url = req_original_url
   }

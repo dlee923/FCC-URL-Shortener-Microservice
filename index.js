@@ -37,10 +37,10 @@ app.post('/api/shorturl', function(req, res) {
   } else {
     dns_host_url = req_original_url
   }
-  
+
   console.log(dns_host_url)
 
-  dns_.lookup(req_original_url, (err, addresses) => {
+  dns_.lookup(dns_host_url, (err, addresses) => {
     if (err !== null) {
       console.log(err);
       res.json(invalidURLObj);

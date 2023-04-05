@@ -58,7 +58,7 @@ function saveToMongoDB(fullURL, shortURL, done) {
 app.post('/api/shorturl', function(req, res) {
   let invalidURLObj = { error: 'invalid url' };
   const req_original_url = req.body.url;
-  const req_short_url = Math.floor(Math.random() * 100000).toString();
+  const req_short_url = Math.floor(Math.random() * 100000);
   let shortURLObj = {
     original_url: req_original_url,
     short_url: req_short_url
@@ -85,7 +85,7 @@ app.post('/api/shorturl', function(req, res) {
   });
 });
 
-app.get('/api/:short_url', function(req, res) {
+app.get('/api/shorturl/:short_url', function(req, res) {
   console.log('Searching DB for ' + req.params.short_url);
   ShortURL.findOne({ shortURL: req.params.short_url }, function(err, shortURLObj) {
     if (err !== null) {

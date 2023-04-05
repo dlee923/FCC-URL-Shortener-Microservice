@@ -46,8 +46,10 @@ function saveToMongoDB(fullURL, shortURL, done) {
   newShortURL.save((err, data) => {
     if (err !== null) {
       console.log(err);
+      console.log('Save failed...')
     } else {
       console.log(data);
+      console.log('Save successful...')
     }
   });
   console.log('Saving to MongoDB...\nFullURL: ' + fullURL + '\nShortURL: ' + shortURL);
@@ -84,9 +86,18 @@ app.post('/api/shorturl', function(req, res) {
 });
 
 app.get('/api/:short_url', function(req, res) {
-  ShortURL.find({ shortURL: req.params.short_url }, function(err, shortURLObj) {
-    console.log('Accessing ShortURL: ' + shortURLObj.shortURL + '\nRedirecting to FullURL: ' + shortURLObj.fullURL);
-    res.redirect(shortURLObj.fullURL)
+  console.log('Searching DB for ' + req.params.short_url);
+  ShortURL.findOne({ shortURL: req.params.short_url }, function(err, shortURLObj) {
+    if (err !== null) {
+      console.log(err);
+      console.log('Accessing DB failed...')
+    } else {
+      console.log('Accessing DB successful...')
+      console.log(shortURLObj);
+      console.log('Accessing ShortURL: ' + shortURLObj.shortURL + '\nRedirecting to FullURL: ' + shortURLObj.fullURL);
+      
+      res.redirect(shortURLObj.fullURL)
+    }
   });
 });
 

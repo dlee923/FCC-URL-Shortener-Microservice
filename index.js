@@ -37,20 +37,24 @@ app.get('/api/hello', function(req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.use('/', bodyParser.urlencoded({extended: false}))
+app.use('/', bodyParser.urlencoded({ extended: false }))
 
-function saveToMongoDB(fullURL, shortURL) {
+function saveToMongoDB(fullURL, shortURL, done) {
   let newShortURL = new ShortURL({
     fullURL: fullURL, shortURL: shortURL
   });
   newShortURL.save((err, data) => {
-    done(null, data);
+    if (err !== null) {
+      console.log(err);
+    } else {
+      console.log(data);
+    }
   });
   console.log('Saving to MongoDB...\nFullURL: ' + fullURL + '\nShortURL: ' + shortURL);
 }
 
 app.post('/api/shorturl', function(req, res) {
-  let invalidURLObj = {error: 'invalid url'};
+  let invalidURLObj = { error: 'invalid url' };
   const req_original_url = req.body.url;
   const req_short_url = Math.floor(Math.random() * 100000).toString();
   let shortURLObj = {
@@ -75,12 +79,12 @@ app.post('/api/shorturl', function(req, res) {
       console.log(addresses);
       res.json(shortURLObj);
       saveToMongoDB(req_original_url, req_short_url);
-    }    
+    }
   });
 });
 
 app.get('/api/:short_url', function(req, res) {
-  ShortURL.find({shortURL: req.params.short_url}, function(err, shortURLObj) {
+  ShortURL.find({ shortURL: req.params.short_url }, function(err, shortURLObj) {
     console.log('Accessing ShortURL: ' + shortURLObj.shortURL + '\nRedirecting to FullURL: ' + shortURLObj.fullURL);
     res.redirect(shortURLObj.fullURL)
   });

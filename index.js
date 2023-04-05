@@ -4,7 +4,22 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 const dns_ = require('dns');
+const mongoose = require('mongoose');
 
+// Connect to MongoDB Atlas DB
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// MongoDB Schema
+const shortURLSchema = new mongoose.Schema({
+  fullURL: {
+    type: String,
+    required: true
+  },
+  shortURL: Number
+});
+
+// MongoDB Model
+const ShortURL = mongoose.model('ShortURL', shortURLSchema);
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -24,9 +39,14 @@ app.get('/api/hello', function(req, res) {
 
 app.use('/', bodyParser.urlencoded({extended: false}))
 
-function saveToSessionStorage(key, value) {
-  sessionStorage.setItem(key, value);
-  console.log('short url ' + value + ' saved to key ' + key);
+function saveToMongoDB(fullURL, shortURL) {
+  let newShortURL = new ShortURL({
+    fullURL: fullURL, shortURL: shortURL
+  });
+  newShortURL.save((err, data) => {
+    done(null, data);
+  });
+  console.log('Saving to MongoDB...\nFullURL: ' + fullURL + '\nShortURL: ' + shortURL);
 }
 
 app.post('/api/shorturl', function(req, res) {
@@ -54,16 +74,16 @@ app.post('/api/shorturl', function(req, res) {
     } else {
       console.log(addresses);
       res.json(shortURLObj);
-      saveToSessionStorage(req_short_url, req_original_url);
+      saveToMongoDB(req_original_url, req_short_url);
     }    
   });
 });
 
 app.get('/api/:short_url', function(req, res) {
-  let shortURLAddress = sessionStorage.getItem(req.params.short_url);
-  console.log(shortURLAddress);
-  res.redirect(shortURLAddress);
-})
+  ShortURL.find({shortURL: req.params.short_url}, function(err, shortURLObj) {
+    console.log('Accessing ShortURL: ' + shortURLObj.shortURL + '\nRedirecting to FullURL: ' + shortURLObj.fullURL);
+    res.redirect(shortURLObj.fullURL));
+});
 
 app.listen(port, function() {
   console.log(`Listening on port ${port}`);

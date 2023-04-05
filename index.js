@@ -63,17 +63,17 @@ app.post('/api/shorturl', function(req, res) {
     original_url: req_original_url,
     short_url: req_short_url
   };
-  var dns_host_url = '';
+  var dns_host_url = new URL(req_original_url);
 
-  if (req_original_url.includes('https://')) {
-    dns_host_url = req_original_url.slice(8);
-  } else if (req_original_url.includes('http://')) {
-    dns_host_url = req_original_url.slice(7);
-  } else {
-    dns_host_url = req_original_url
-  }
+  // if (req_original_url.includes('https://')) {
+  //   dns_host_url = req_original_url.slice(8);
+  // } else if (req_original_url.includes('http://')) {
+  //   dns_host_url = req_original_url.slice(7);
+  // } else {
+  //   dns_host_url = req_original_url
+  // }
 
-  dns_.lookup(dns_host_url, (err, addresses) => {
+  dns_.lookup(dns_host_url.hostname, (err, addresses) => {
     if (err !== null) {
       console.log(err);
       res.json(invalidURLObj);

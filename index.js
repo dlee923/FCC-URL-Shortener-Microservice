@@ -82,7 +82,8 @@ app.post('/api/shorturl', function(req, res) {
 app.get('/api/:short_url', function(req, res) {
   ShortURL.find({shortURL: req.params.short_url}, function(err, shortURLObj) {
     console.log('Accessing ShortURL: ' + shortURLObj.shortURL + '\nRedirecting to FullURL: ' + shortURLObj.fullURL);
-    res.redirect(shortURLObj.fullURL));
+    res.redirect(shortURLObj.fullURL)
+  });
 });
 
 app.listen(port, function() {
